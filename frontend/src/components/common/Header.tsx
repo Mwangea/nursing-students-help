@@ -45,15 +45,15 @@ export default function Header() {
           </div>
           </Link>
           
-          <a href="#subjects" className="text-gray-700 hover:text-yellow-500">
+          <Link to="/subjects" className="text-gray-700 hover:text-yellow-500">
             Subjects
-          </a>
-          <a href="#faqs" className="text-gray-700 hover:text-yellow-500">
+          </Link>
+          <Link to="/faq" className="text-gray-700 hover:text-yellow-500">
             FAQs
-          </a>
-          <a href="#contact" className="text-gray-700 hover:text-yellow-500">
+          </Link>
+          <Link to="/contact" className="text-gray-700 hover:text-yellow-500">
             Contact
-          </a>
+          </Link>
         </div>
 
         {/* Action Buttons */}

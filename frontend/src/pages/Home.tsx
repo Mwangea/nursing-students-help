@@ -2,6 +2,17 @@ import { Helmet } from "react-helmet";
 import heroImg from "../assets/hero-img.jpeg";
 import { Link } from "react-router-dom";
 import { Award, BookOpen, Users } from "lucide-react";
+import { CheckCircle } from 'lucide-react';
+import { TestimonialCard } from "../components/card/TestimonCard";
+
+const reasons = [
+  'Expert-led instruction and mentorship',
+  'Comprehensive study materials and resources',
+  'Interactive learning environment',
+  'Flexible learning schedule',
+  'Proven success track record',
+  'Supportive community of learners'
+];
 
 export default function Home() {
   return (
@@ -124,8 +135,56 @@ export default function Home() {
 
       {/* service section */}
       <div className="py-20 bg-gray-50" id="services">
-
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-black mb-4">Our Services</h2>
+            <div className="w-24 h-1 bg-yellow-400 mx-auto"></div>
+            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+              Expert-led exam preparation and personalized tutoring services
+              designed to help nursing students excel in their studies and pass
+              their exams with confidence.
+            </p>
+          </div>
+        </div>
       </div>
+
+      {/* Why choose us */}
+      <div className="py-20 bg-black">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="grid md:grid-cols-2 gap-12 items-center">
+          <div className="text-white">
+            <h2 className="text-3xl font-bold mb-6">Why Choose Us</h2>
+            <div className="w-24 h-1 bg-yellow-400 mb-8"></div>
+            
+            <div className="space-y-4">
+              {reasons.map((reason, index) => (
+                <div key={index} className="flex items-center space-x-3">
+                  <CheckCircle className="h-6 w-6 text-yellow-400 flex-shrink-0" />
+                  <span className="text-gray-300">{reason}</span>
+                </div>
+              ))}
+            </div>
+
+            <button className="mt-8 px-8 py-3 bg-yellow-400 text-black font-bold rounded-lg hover:bg-yellow-500 transition-colors">
+              Join Now
+            </button>
+          </div>
+
+          <div>
+            <img
+              src="https://images.unsplash.com/photo-1576091160550-2173dba999ef?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80"
+              alt="Nursing education"
+              className="rounded-lg shadow-2xl"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+     
+     {/* projects */}
+
+     {/* Testimonials */}
+     <TestimonialCard />
     </>
   );
 }

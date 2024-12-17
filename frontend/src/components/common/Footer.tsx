@@ -1,4 +1,6 @@
 import { Heart, Mail, Phone, MapPin } from 'lucide-react';
+import { Link } from 'react-router-dom';
+import { Navigate } from 'react-router-dom';
 
 export function Footer() {
   return (
@@ -96,24 +98,24 @@ export function Footer() {
         {/* Legal Section */}
         <div className="mt-8 pt-6 border-t border-gray-800 text-center">
           <div className="flex flex-col sm:flex-row sm:justify-center sm:space-x-8 space-y-4 sm:space-y-0 text-sm text-gray-400">
-            <a
-              href="/privacy-policy"
+            <Link
+              to="/privacy-policy"
               className="hover:text-yellow-500 transition-colors duration-300"
             >
               Privacy Policy
-            </a>
-            <a
-              href="/terms-of-service"
+            </Link>
+            <Link
+              to="/terms-of-service"
               className="hover:text-yellow-500 transition-colors duration-300"
             >
               Terms of Service
-            </a>
-            <a
-              href="/refund-policy"
+            </Link>
+            <Link
+              to="/refund-policy"
               className="hover:text-yellow-500 transition-colors duration-300"
             >
               Refund Policy
-            </a>
+            </Link>
           </div>
         </div>
 
