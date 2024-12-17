@@ -3,7 +3,7 @@ import heroImg from "../assets/hero-img.jpeg";
 import { Link } from "react-router-dom";
 import { Award, BookOpen, Users } from "lucide-react";
 import { CheckCircle } from 'lucide-react';
-import { TestimonialCard } from "../components/card/TestimonCard";
+import { TestimonialCard } from "../components/card/TestimonialCard";
 
 const reasons = [
   'Expert-led instruction and mentorship',

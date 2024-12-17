@@ -1,10 +1,10 @@
 import { Routes, Route } from "react-router-dom";
 import Home from "../pages/Home";
-import { PrivacyPolicy } from "../legal/privacy-policy";
 import { TermsOfService } from "../legal/terms-of-service";
 import { RefundPolicy } from "../legal/refund-policy";
 import { FAQ } from "../pages/FAQ";
 import { Contact } from "../pages/Contact";
+import PrivacyPolicy from "../legal/privacy-policy";
 
 const AppRoutes = () => {
   return (

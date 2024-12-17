@@ -68,7 +68,7 @@ export default function Header() {
 
         {/* Menu Icon for Small Screens */}
         <div className="md:hidden flex items-center">
-          <button onClick={() => setMenuOpen(!menuOpen)}>
+        <button onClick={() => setMenuOpen(!menuOpen)} aria-label="Toggle menu">
             <Menu className="h-6 w-6 text-gray-700" />
           </button>
         </div>
@@ -85,7 +85,7 @@ export default function Header() {
                   NursingStudentsHelp.us
                 </span>
               </div>
-              <button onClick={() => setMenuOpen(false)}>
+              <button onClick={() => setMenuOpen(false)} aria-label="Close menu">
                 <X className="h-6 w-6 text-gray-700" />
               </button>
             </div>
