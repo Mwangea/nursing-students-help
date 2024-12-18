@@ -182,6 +182,19 @@ export default function Home() {
     </div>
      
      {/* projects */}
+     <div className="py-20 bg-gray-50" id="projects">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="text-center mb-16">
+            <h2 className="text-3xl font-bold text-black mb-4">Our Projects</h2>
+            <div className="w-24 h-1 bg-yellow-400 mx-auto"></div>
+            <p className="text-gray-600 text-center mb-12 max-w-2xl mx-auto">
+              Expert-led exam preparation and personalized tutoring services
+              designed to help nursing students excel in their studies and pass
+              their exams with confidence.
+            </p>
+          </div>
+        </div>
+      </div>
 
      {/* Testimonials */}
      <TestimonialCard />
