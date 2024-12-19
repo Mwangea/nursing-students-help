@@ -1,88 +1,81 @@
-import React, { useState, useRef, useEffect } from 'react';
-import { 
-  MessageSquare, 
-  MapPin, 
-  PhoneCall, 
-  Mail, 
-  CheckCircle, 
-  XCircle, 
-  User, 
+import React, { useState, useRef, useEffect } from "react";
+import {
+  MessageSquare,
+  Mail,
   Send,
   Shield,
   Clock,
-  HelpCircle
-} from 'lucide-react';
+  HelpCircle,
+  MapPin,
+  AlertCircle,
+} from "lucide-react";
 
-// Predefined support messages to prevent undefined issues
 const SUPPORT_MESSAGES = [
   "Need help with your nursing studies?",
   "We're here 24/7 to support you!",
-  "Expert guidance is just a message away."
+  "Expert guidance is just a message away.",
+  "Let us help you succeed in nursing!",
+  "Professional support for nursing students",
 ];
 
-// Validation function
-const validateForm = (formData: {
-  firstName: string, 
-  lastName: string, 
-  email: string, 
-  message: string
-}) => {
-  const errors: {[key: string]: string} = {};
-  
-  // Name validations
+const validateForm = (formData) => {
+  const errors = {};
+
   if (formData.firstName.trim().length < 2) {
-    errors.firstName = 'First name must be at least 2 characters';
+    errors.firstName = "First name must be at least 2 characters";
   }
-  
+
   if (formData.lastName.trim().length < 2) {
-    errors.lastName = 'Last name must be at least 2 characters';
+    errors.lastName = "Last name must be at least 2 characters";
   }
-  
-  // Email validation
+
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   if (!emailRegex.test(formData.email)) {
-    errors.email = 'Please enter a valid email address';
+    errors.email = "Please enter a valid email address";
   }
-  
-  // Message validation
+
   if (formData.message.trim().length < 10) {
-    errors.message = 'Message must be at least 10 characters long';
+    errors.message = "Message must be at least 10 characters long";
   }
-  
+
+  if (formData.subject.trim().length < 3) {
+    errors.subject = "Please select a subject";
+  }
+
   return errors;
 };
 
 export function Contact() {
   const [formData, setFormData] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    message: ''
+    firstName: "",
+    lastName: "",
+    email: "",
+    message: "",
+    subject: "",
   });
 
-  const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
+  const [formErrors, setFormErrors] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [submitStatus, setSubmitStatus] = useState('');
+  const [submitStatus, setSubmitStatus] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
   const [currentMessageIndex, setCurrentMessageIndex] = useState(0);
   const [displayMessage, setDisplayMessage] = useState(SUPPORT_MESSAGES[0]);
+  const [showContactInfo, setShowContactInfo] = useState(false);
 
-  const formRef = useRef<HTMLFormElement>(null);
+  const formRef = useRef(null);
 
-  // Dynamic support message typing effect
   useEffect(() => {
-    let typingTimer: NodeJS.Timeout;
+    let typingTimer;
     let currentChar = 0;
 
     const typeMessage = () => {
       if (currentChar < SUPPORT_MESSAGES[currentMessageIndex].length) {
-        setDisplayMessage(prev => 
+        setDisplayMessage(
           SUPPORT_MESSAGES[currentMessageIndex].slice(0, currentChar + 1)
         );
         currentChar++;
         typingTimer = setTimeout(typeMessage, 50);
       } else {
-        // Reset after displaying full message
         typingTimer = setTimeout(() => {
           currentChar = 0;
           const nextIndex = (currentMessageIndex + 1) % SUPPORT_MESSAGES.length;
@@ -92,88 +85,115 @@ export function Contact() {
     };
 
     typingTimer = setTimeout(typeMessage, 50);
-
     return () => clearTimeout(typingTimer);
   }, [currentMessageIndex]);
 
-  // Character count and error tracking
   useEffect(() => {
     setCharacterCount(formData.message.length);
   }, [formData.message]);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
-      [name]: value
+      [name]: value,
     }));
-    
-    // Clear specific error when user starts typing
+
     if (formErrors[name]) {
-      const newErrors = {...formErrors};
+      const newErrors = { ...formErrors };
       delete newErrors[name];
       setFormErrors(newErrors);
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+  const sendEmail = async (formData) => {
+    try {
+      const response = await fetch(
+        "https://api.emailjs.com/api/v1.0/email/send",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            service_id: "YOUR_SERVICE_ID",
+            template_id: "YOUR_TEMPLATE_ID",
+            user_id: "YOUR_USER_ID",
+            template_params: {
+              to_email: "support@nursingstudentshelp.us",
+              from_name: `${formData.firstName} ${formData.lastName}`,
+              from_email: formData.email,
+              subject: formData.subject,
+              message: formData.message,
+            },
+          }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Failed to send email");
+      return true;
+    } catch (error) {
+      console.error("Email send error:", error);
+      throw error;
+    }
+  };
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    
-    // Validate form
+
     const validationErrors = validateForm(formData);
-    
+
     if (Object.keys(validationErrors).length > 0) {
       setFormErrors(validationErrors);
       return;
     }
 
     setIsSubmitting(true);
-    setSubmitStatus('');
+    setSubmitStatus("");
 
     try {
-      // Simulated API call (replace with actual implementation)
-      await new Promise(resolve => setTimeout(resolve, 1500));
-
-      setSubmitStatus('Message sent successfully!');
+      await sendEmail(formData);
+      setSubmitStatus("Message sent successfully! We'll get back to you soon.");
       setFormData({
-        firstName: '',
-        lastName: '',
-        email: '',
-        message: ''
+        firstName: "",
+        lastName: "",
+        email: "",
+        message: "",
+        subject: "",
       });
-      
-      // Scroll to top of form
-      formRef.current?.scrollIntoView({ behavior: 'smooth' });
+
+      formRef.current?.scrollIntoView({ behavior: "smooth" });
     } catch (error) {
-      setSubmitStatus('Failed to send message. Please try again.');
+      setSubmitStatus(
+        "Failed to send message. Please try again or contact us directly."
+      );
     } finally {
       setIsSubmitting(false);
     }
   };
 
-  // Quick support options
   const quickSupports = [
     {
       icon: <HelpCircle className="w-6 h-6 text-yellow-500" />,
       title: "Study Guidance",
-      description: "Get instant help with nursing study materials"
+      description: "Get instant help with nursing study materials",
     },
     {
       icon: <Shield className="w-6 h-6 text-yellow-500" />,
       title: "Exam Prep",
-      description: "Comprehensive exam preparation support"
+      description: "Comprehensive exam preparation support",
     },
     {
       icon: <Mail className="w-6 h-6 text-yellow-500" />,
       title: "Career Counseling",
-      description: "Professional advice for nursing careers"
-    }
+      description: "Professional advice for nursing careers",
+    },
   ];
 
   return (
-    <div 
+    <div
       className="relative w-full"
-      itemScope 
+      itemScope
       itemType="http://schema.org/ContactPage"
     >
       <div className="bg-black text-white py-10 px-4">
@@ -194,30 +214,40 @@ export function Contact() {
       </div>
 
       <div className="relative bg-white py-16 lg:py-24">
-        <div className="container mx-auto px-4">
-          <div className="flex flex-col-reverse lg:flex-row items-center justify-between">
-            {/* Contact Form */}
-            <div className="w-full lg:w-1/2 max-w-lg mt-10 lg:mt-0">
-              <h2 className="text-2xl font-bold mb-8">Get in Touch</h2>
-              
-              <form 
+        <div className="container mx-auto px-4 max-w-7xl py-16">
+          <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-2 gap-12">
+            {/* First Column: Image */}
+            <div className="relative w-full max-w-2xl lg:max-w-full mx-auto">
+              <img
+                src="call-center.png"
+                alt="Medical professionals providing support"
+                className="w-full h-full object-cover"
+                loading="lazy"
+              />
+
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-2xl" />
+            </div>
+            <div className="w-full lg:w-full">
+              <form
                 ref={formRef}
-                onSubmit={handleSubmit} 
+                onSubmit={handleSubmit}
                 className="space-y-6"
-                itemScope 
+                itemScope
                 itemType="http://schema.org/ContactForm"
               >
-                {/* Name Inputs */}
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-wrap gap-4 ">
                   <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      First Name
+                    </label>
                     <input
                       type="text"
                       name="firstName"
                       value={formData.firstName}
                       onChange={handleChange}
-                      placeholder="First Name"
+                      placeholder="John"
                       className={`w-full bg-gray-100/50 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 ${
-                        formErrors.firstName ? 'ring-2 ring-red-500' : ''
+                        formErrors.firstName ? "ring-2 ring-red-500" : ""
                       }`}
                       required
                     />
@@ -228,14 +258,17 @@ export function Contact() {
                     )}
                   </div>
                   <div className="flex-1">
+                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                      Last Name
+                    </label>
                     <input
                       type="text"
                       name="lastName"
                       value={formData.lastName}
                       onChange={handleChange}
-                      placeholder="Last Name"
+                      placeholder="Doe"
                       className={`w-full bg-gray-100/50 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 ${
-                        formErrors.lastName ? 'ring-2 ring-red-500' : ''
+                        formErrors.lastName ? "ring-2 ring-red-500" : ""
                       }`}
                       required
                     />
@@ -247,16 +280,18 @@ export function Contact() {
                   </div>
                 </div>
 
-                {/* Email Input */}
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Email Address
+                  </label>
                   <input
                     type="email"
                     name="email"
                     value={formData.email}
                     onChange={handleChange}
-                    placeholder="JohnDoe214@gmail.com"
+                    placeholder="john.doe@example.com"
                     className={`w-full bg-gray-100/50 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 ${
-                      formErrors.email ? 'ring-2 ring-red-500' : ''
+                      formErrors.email ? "ring-2 ring-red-500" : ""
                     }`}
                     required
                   />
@@ -267,15 +302,44 @@ export function Contact() {
                   )}
                 </div>
 
-                {/* Message Input */}
                 <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Subject
+                  </label>
+                  <select
+                    name="subject"
+                    value={formData.subject}
+                    onChange={handleChange}
+                    aria-label="Subject"
+                    className={`w-full bg-gray-100/50 px-4 py-3 rounded-md focus:outline-none focus:ring-2 focus:ring-yellow-500 ${
+                      formErrors.subject ? "ring-2 ring-red-500" : ""
+                    }`}
+                    required
+                  >
+                    <option value="">Select a subject</option>
+                    <option value="study">Study Help</option>
+                    <option value="exam">Exam Preparation</option>
+                    <option value="career">Career Advice</option>
+                    <option value="other">Other</option>
+                  </select>
+                  {formErrors.subject && (
+                    <p className="text-red-500 text-sm mt-1">
+                      {formErrors.subject}
+                    </p>
+                  )}
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                    Message
+                  </label>
                   <textarea
                     name="message"
                     value={formData.message}
                     onChange={handleChange}
-                    placeholder="What can we help you with?"
+                    placeholder="How can we help you?"
                     className={`w-full bg-gray-100/50 px-4 py-3 rounded-md resize-none focus:outline-none focus:ring-2 focus:ring-yellow-500 h-32 ${
-                      formErrors.message ? 'ring-2 ring-red-500' : ''
+                      formErrors.message ? "ring-2 ring-red-500" : ""
                     }`}
                     maxLength={500}
                     required
@@ -283,18 +347,15 @@ export function Contact() {
                   <div className="flex justify-between text-sm text-gray-500 mt-1">
                     <span>{characterCount}/500 characters</span>
                     {formErrors.message && (
-                      <p className="text-red-500">
-                        {formErrors.message}
-                      </p>
+                      <p className="text-red-500">{formErrors.message}</p>
                     )}
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <button
                   type="submit"
                   disabled={isSubmitting}
-                  className="w-full bg-yellow-500 text-white py-3 rounded-md hover:bg-yellow-600 transition duration-300 flex items-center justify-center"
+                  className="w-full bg-yellow-500 text-white py-3 rounded-md hover:bg-yellow-600 transition duration-300 flex items-center justify-center disabled:opacity-50"
                 >
                   {isSubmitting ? (
                     <>
@@ -309,41 +370,109 @@ export function Contact() {
                   )}
                 </button>
 
-                {/* Submit Status */}
                 {submitStatus && (
-                  <div className={`text-center py-2 rounded-md ${
-                    submitStatus.includes('successfully') 
-                      ? 'bg-green-100 text-green-700' 
-                      : 'bg-red-100 text-red-700'
-                  }`}>
-                    {submitStatus}
+                  <div
+                    className={`p-4 rounded-lg border mt-4 ${
+                      submitStatus.includes("successfully")
+                        ? "bg-green-50 border-green-200 text-green-600"
+                        : "bg-red-50 border-red-200 text-red-600"
+                    }`}
+                  >
+                    <div className="flex items-center">
+                      <AlertCircle className="w-5 h-5 mr-2" />
+                      <p>{submitStatus}</p>
+                    </div>
                   </div>
                 )}
               </form>
             </div>
-
-            {/* Image and Support Info */}
-            <div className="w-full lg:w-1/2 flex flex-col items-center lg:pl-12">
-              <img
-                src="call-center.png"
-                alt="Call Center Illustration"
-                className="w-full max-w-md h-auto object-contain"
-              />
-              
-              {/* Quick Support Options */}
-              <div className="w-full max-w-lg mt-6 space-y-4">
-                {quickSupports.map((support, index) => (
-                  <div 
-                    key={index} 
-                    className="bg-white p-4 rounded-lg shadow-md flex items-center hover:shadow-lg transition-all duration-300"
-                  >
-                    {support.icon}
+            <div className="w-full">
+              {/* Main content container */}
+              <div className="w-full gap-8">
+                {/* Quick Support Section */}
+                <div className="w-full">
+                  {quickSupports.map((support, index) => (
+                    <div
+                      key={index}
+                      className="bg-white p-4 rounded-lg shadow-md flex items-center hover:shadow-lg transition-all duration-300 border border-gray-100 mb-4"
+                    >
+                      <div className="text-yellow-500">{support.icon}</div>
+                      <div className="ml-4">
+                        <h3 className="font-bold text-lg">{support.title}</h3>
+                        <p className="text-gray-600 text-sm">
+                          {support.description}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+            {/* Additional Contact Information Section */}
+            <div className="w-full">
+              <div className="bg-gray-50 p-6 rounded-lg">
+                <h3 className="text-xl font-bold mb-6">
+                  Additional Ways to Reach Us
+                </h3>
+                <div className="space-y-4">
+                  <div className="flex items-center hover:bg-gray-100 p-3 rounded-md transition-colors">
+                    <div className="bg-yellow-100 p-2 rounded-full">
+                      <Mail className="w-5 h-5 text-yellow-600" />
+                    </div>
                     <div className="ml-4">
-                      <h3 className="font-bold text-lg">{support.title}</h3>
-                      <p className="text-gray-600 text-sm">{support.description}</p>
+                      <h4 className="font-medium">Email Support</h4>
+                      <a
+                        href="mailto:support@nursingstudentshelp.us"
+                        className="text-yellow-600 hover:text-yellow-700"
+                      >
+                        support@nursingstudentshelp.us
+                      </a>
                     </div>
                   </div>
-                ))}
+                  <div className="flex items-center hover:bg-gray-100 p-3 rounded-md transition-colors">
+                    <div className="bg-yellow-100 p-2 rounded-full">
+                      <Clock className="w-5 h-5 text-yellow-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h4 className="font-medium">Response Time</h4>
+                      <p className="text-gray-600">Within 24 hours</p>
+                    </div>
+                  </div>
+                  <div className="flex items-center hover:bg-gray-100 p-3 rounded-md transition-colors">
+                    <div className="bg-yellow-100 p-2 rounded-full">
+                      <MapPin className="w-5 h-5 text-yellow-600" />
+                    </div>
+                    <div className="ml-4">
+                      <h4 className="font-medium">Office Hours</h4>
+                      <p className="text-gray-600">24/7 Online Support</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          {/* FAQ Section - Full Width */}
+          <div className="w-full mt-8">
+            <div className="bg-white p-4 rounded-lg border border-gray-200 w-full">
+              <h4 className="font-bold text-lg mb-4">
+                Frequently Asked Questions
+              </h4>
+              <div className="space-y-3">
+                <div
+                  className="cursor-pointer hover:bg-gray-50 p-2 rounded"
+                  onClick={() => setShowContactInfo(!showContactInfo)}
+                >
+                  <div className="flex justify-between items-center">
+                    <p className="font-medium">What services do you offer?</p>
+                    <HelpCircle className="w-4 h-4 text-yellow-500" />
+                  </div>
+                  {showContactInfo && (
+                    <p className="text-gray-600 text-sm mt-2 pl-2">
+                      We offer comprehensive nursing study support, exam
+                      preparation guidance, and career counseling services.
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
