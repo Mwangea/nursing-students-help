@@ -1,4 +1,5 @@
-import React, { useState, useRef, useEffect } from "react";
+
+import { useState, useRef, useEffect } from "react";
 import {
   MessageSquare,
   Mail,
@@ -10,6 +11,22 @@ import {
   AlertCircle,
 } from "lucide-react";
 
+interface FormData {
+  firstName: string;
+  lastName: string;
+  email: string;
+  message: string;
+  subject: string;
+}
+
+interface FormErrors {
+  firstName?: string;
+  lastName?: string;
+  email?: string;
+  message?: string;
+  subject?: string;
+}
+
 const SUPPORT_MESSAGES = [
   "Need help with your nursing studies?",
   "We're here 24/7 to support you!",
@@ -18,8 +35,8 @@ const SUPPORT_MESSAGES = [
   "Professional support for nursing students",
 ];
 
-const validateForm = (formData) => {
-  const errors = {};
+const validateForm = (formData: FormData): FormErrors => {
+  const errors: FormErrors = {};
 
   if (formData.firstName.trim().length < 2) {
     errors.firstName = "First name must be at least 2 characters";
@@ -45,16 +62,23 @@ const validateForm = (formData) => {
   return errors;
 };
 
+interface QuickSupport {
+  icon: JSX.Element;
+  title: string;
+  description: string;
+}
+
 export function Contact() {
-  const [formData, setFormData] = useState({
+  const initialFormData: FormData = {
     firstName: "",
     lastName: "",
     email: "",
     message: "",
     subject: "",
-  });
+  };
 
-  const [formErrors, setFormErrors] = useState({});
+  const [formData, setFormData] = useState<FormData>(initialFormData);
+  const [formErrors, setFormErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState("");
   const [characterCount, setCharacterCount] = useState(0);
@@ -62,10 +86,9 @@ export function Contact() {
   const [displayMessage, setDisplayMessage] = useState(SUPPORT_MESSAGES[0]);
   const [showContactInfo, setShowContactInfo] = useState(false);
 
-  const formRef = useRef(null);
-
+  const formRef = useRef<HTMLFormElement>(null);
   useEffect(() => {
-    let typingTimer;
+    let typingTimer: ReturnType<typeof setTimeout>;
     let currentChar = 0;
 
     const typeMessage = () => {
@@ -92,21 +115,23 @@ export function Contact() {
     setCharacterCount(formData.message.length);
   }, [formData.message]);
 
-  const handleChange = (e) => {
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
+  ) => {
     const { name, value } = e.target;
     setFormData((prevState) => ({
       ...prevState,
       [name]: value,
     }));
 
-    if (formErrors[name]) {
+    if (formErrors[name as keyof FormErrors]) {
       const newErrors = { ...formErrors };
-      delete newErrors[name];
+      delete newErrors[name as keyof FormErrors];
       setFormErrors(newErrors);
     }
   };
 
-  const sendEmail = async (formData) => {
+  const sendEmail = async (formData: FormData): Promise<boolean> => {
     try {
       const response = await fetch(
         "https://api.emailjs.com/api/v1.0/email/send",
@@ -138,7 +163,7 @@ export function Contact() {
     }
   };
 
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     const validationErrors = validateForm(formData);
@@ -154,16 +179,9 @@ export function Contact() {
     try {
       await sendEmail(formData);
       setSubmitStatus("Message sent successfully! We'll get back to you soon.");
-      setFormData({
-        firstName: "",
-        lastName: "",
-        email: "",
-        message: "",
-        subject: "",
-      });
-
+      setFormData(initialFormData);
       formRef.current?.scrollIntoView({ behavior: "smooth" });
-    } catch (error) {
+    } catch {
       setSubmitStatus(
         "Failed to send message. Please try again or contact us directly."
       );
@@ -172,7 +190,7 @@ export function Contact() {
     }
   };
 
-  const quickSupports = [
+  const quickSupports: QuickSupport[] = [
     {
       icon: <HelpCircle className="w-6 h-6 text-yellow-500" />,
       title: "Study Guidance",
