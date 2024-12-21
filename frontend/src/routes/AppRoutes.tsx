@@ -5,9 +5,12 @@ import { RefundPolicy } from "../legal/refund-policy";
 
 import { Contact } from "../pages/Contact";
 import PrivacyPolicy from "../legal/privacy-policy";
-import Register from "../components/auth/Register";
-import Login from "../components/auth/Login";
+
+
 import FAQ from "../pages/FAQ";
+import { Register } from "../components/auth/Register";
+import { Login } from "../components/auth/Login";
+import { ForgotPassword } from "../components/auth/ForgotPassword";
 
 const AppRoutes = () => {
   return (
@@ -20,6 +23,8 @@ const AppRoutes = () => {
       <Route path="/contact" element={<Contact />} />
       <Route path="/register" element={<Register />} />
       <Route path="/login" element={<Login />} />
+      <Route path="/register" element={<Register />} />
+      <Route path="/forgot-password" element={<ForgotPassword />} />
     </Routes>
   );
 };
