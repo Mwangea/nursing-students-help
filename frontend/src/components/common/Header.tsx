@@ -58,12 +58,12 @@ export default function Header() {
 
         {/* Action Buttons */}
         <div className="hidden md:flex items-center space-x-4">
-          <button
-            onClick={() => (window.location.href = '/register')}
+          <Link to="/register"
+            
             className="bg-yellow-500 text-white px-4 py-2 rounded-md hover:bg-yellow-600"
           >
             Get Started
-          </button>
+          </Link>
         </div>
 
         {/* Menu Icon for Small Screens */}

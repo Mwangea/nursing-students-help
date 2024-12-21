@@ -1,4 +1,4 @@
-import React from 'react';
+
 import { Star } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Pagination } from 'swiper/modules';
