@@ -4,7 +4,7 @@ import Header from "./components/common/Header";
 import AppRoutes from "./routes/AppRoutes";
 import { useLocation } from "react-router-dom";
 
-const Layout = ({ children }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   const location = useLocation();
   const authPages = ['/login', '/register', '/forgot-password'];
   const isAuthPage = authPages.includes(location.pathname);
