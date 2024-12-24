@@ -11,6 +11,8 @@ import FAQ from "../pages/FAQ";
 import { Register } from "../components/auth/Register";
 import { Login } from "../components/auth/Login";
 import { ForgotPassword } from "../components/auth/ForgotPassword";
+import SearchQuiz from "../pages/SearchQuiz";
+import Subjects from "../pages/Subjects";
 
 const AppRoutes = () => {
   return (
@@ -25,6 +27,8 @@ const AppRoutes = () => {
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
       <Route path="/forgot-password" element={<ForgotPassword />} />
+      <Route path="/search-questions" element={<SearchQuiz />} />
+      <Route path="/subjects" element={<Subjects />} />
     </Routes>
   );
 };
