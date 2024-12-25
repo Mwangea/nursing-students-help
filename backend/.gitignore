@@ -12,10 +12,14 @@ dist
 dist-ssr
 *.local
 <<<<<<< HEAD
+<<<<<<< HEAD
 *.env
 
 =======
 >>>>>>> da07a74 (fix)
+=======
+.env
+>>>>>>> 1c3f44b (fix: google auth)
 
 # Editor directories and files
 .vscode/*
