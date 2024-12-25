@@ -7,9 +7,21 @@ passport.use(new GoogleStrategy({
     clientID: process.env.GOOGLE_CLIENT_ID,
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/callback"
-}, function(accessToken, refreshToken, profile, cb) {
-    // Handle user authentication here
-    return cb(null, profile);
+}, async (accessToken, refreshToken, profile, cb) => {
+    try {
+        let user = await User.findByProviderId('google', profile.id);
+        if (!user) {
+            user = await User.create({
+                name: `${profile.displayName}`,
+                email: profile.emails[0].value,
+                provider: 'google',
+                providerId: profile.id
+            });
+        }
+        return cb(null, user);
+    } catch (error) {
+        return cb(error, null);
+    }
 }));
 
 passport.use(new FacebookStrategy({
