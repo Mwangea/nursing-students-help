@@ -7,19 +7,14 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
+# Node.js
 node_modules
 dist
 dist-ssr
 *.local
-<<<<<<< HEAD
-<<<<<<< HEAD
-*.env
 
-=======
->>>>>>> da07a74 (fix)
-=======
-.env
->>>>>>> 1c3f44b (fix: google auth)
+# Environment files
+*.env
 
 # Editor directories and files
 .vscode/*
