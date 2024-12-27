@@ -3,9 +3,13 @@ import React, { useState } from 'react';
 import { theme } from '../../constants/Theme';
 import { AuthLayout } from './AuthLayout';
 import { AuthForm } from './AuthForm';
+import { useNotification } from '../../context/NotificationContext';
+import { useAuth } from '../../context/AuthContext';
 
 
 export const Login: React.FC = () => {
+  const { login } = useAuth();
+  const { showToast } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     email: '',
@@ -15,8 +19,14 @@ export const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // TODO: Implement login logic
-    setTimeout(() => setIsLoading(false), 1000);
+    try {
+      await login(formData);
+      showToast('Welcome back!', 'success');
+    } catch (err: unknown) {
+      showToast(String(err) || 'Login failed', 'error');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   const handleChange = (field: string, value: string) => {
