@@ -27,7 +27,7 @@ export const AuthForm: React.FC<AuthFormProps> = ({
   return (
     <div className="flex flex-col min-h-screen">
       <div className="flex-grow">
-        <form onSubmit={onSubmit} className="space-y-6">
+        <form onSubmit={onSubmit}  className="space-y-6">
           {type === 'register' && (
             <Input
               label="Full name"

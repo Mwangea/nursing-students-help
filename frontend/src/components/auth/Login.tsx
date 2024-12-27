@@ -1,11 +1,9 @@
 import React, { useState } from 'react';
-
 import { theme } from '../../constants/Theme';
 import { AuthLayout } from './AuthLayout';
 import { AuthForm } from './AuthForm';
 import { useNotification } from '../../context/NotificationContext';
 import { useAuth } from '../../context/AuthContext';
-
 
 export const Login: React.FC = () => {
   const { login } = useAuth();
@@ -19,11 +17,15 @@ export const Login: React.FC = () => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
+    
     try {
       await login(formData);
-      showToast('Welcome back!', 'success');
-    } catch (err: unknown) {
-      showToast(String(err) || 'Login failed', 'error');
+      showToast('Successfully logged in!', 'success');
+    } catch (error) {
+      showToast(
+        error instanceof Error ? error.message : 'Invalid credentials', 
+        'error'
+      );
     } finally {
       setIsLoading(false);
     }
