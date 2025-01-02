@@ -1,38 +1,39 @@
 import React, { useState } from 'react';
-import { theme } from '../../constants/Theme';
 import { AuthLayout } from './AuthLayout';
 import { AuthForm } from './AuthForm';
-import { useNotification } from '../../context/NotificationContext';
 import { useAuth } from '../../context/AuthContext';
+import { useNotification } from '../../context/NotificationContext';
+import { theme } from '../../constants/Theme';
 
 export const Login: React.FC = () => {
   const { login } = useAuth();
   const { showToast } = useNotification();
   const [isLoading, setIsLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    email: '',
-    password: ''
-  });
+  const [formData, setFormData] = useState({ email: '', password: '' });
+  const [errorMessage, setErrorMessage] = useState<string | null>(null); // For dynamic error messages
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault(); // Prevent page reload
+    setErrorMessage(null); // Clear previous errors
     setIsLoading(true);
-    
+
     try {
       await login(formData);
       showToast('Successfully logged in!', 'success');
     } catch (error) {
-      showToast(
-        error instanceof Error ? error.message : 'Invalid credentials', 
-        'error'
-      );
+      // Handle error without reloading the page
+      const errorMsg =
+        error instanceof Error ? error.message : 'Invalid credentials';
+      setErrorMessage(errorMsg); // Display error message dynamically
+      showToast(errorMsg, 'error');
     } finally {
       setIsLoading(false);
     }
   };
 
   const handleChange = (field: string, value: string) => {
-    setFormData(prev => ({ ...prev, [field]: value }));
+    setFormData((prev) => ({ ...prev, [field]: value }));
+    setErrorMessage(null); // Clear error when user starts typing
   };
 
   return (
@@ -48,6 +49,9 @@ export const Login: React.FC = () => {
         formData={formData}
         onChange={handleChange}
       />
+      {errorMessage && (
+        <p className="text-red-500 text-sm mt-2">{errorMessage}</p>
+      )}
     </AuthLayout>
   );
 };

@@ -2,7 +2,8 @@ export const theme = {
     images: {
       login: "login-img.avif",
       register: "register-img.avif",
-      forgotpassword: "onboarding-img.webp"
+      forgotpassword: "onboarding-img.webp",
+      resetpassword: "reset.jpg"
     },
     gradients: {
       primary: "from-yellow-400 via-yellow-500 to-yellow-600",
