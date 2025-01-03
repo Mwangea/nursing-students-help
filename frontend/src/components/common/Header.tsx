@@ -71,7 +71,7 @@ export default function Header() {
               <Link to="/" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
                 Home
               </Link>
-              <Link to="/search-questions" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
+              <Link to="/questions" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
                 Search Questions
               </Link>
               <Link to="/subjects" className="text-gray-700 hover:text-yellow-500 font-medium transition-colors">
@@ -130,7 +130,7 @@ export default function Header() {
                     <Link to="/" className="text-gray-700 hover:text-yellow-500 py-2 transition-colors">
                       Home
                     </Link>
-                    <Link to="/search-questions" className="text-gray-700 hover:text-yellow-500 py-2 transition-colors">
+                    <Link to="/questions" className="text-gray-700 hover:text-yellow-500 py-2 transition-colors">
                       Search Questions
                     </Link>
                     <Link to="/subjects" className="text-gray-700 hover:text-yellow-500 py-2 transition-colors">
