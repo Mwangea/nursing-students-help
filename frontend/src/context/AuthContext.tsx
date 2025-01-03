@@ -1,3 +1,4 @@
+// AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { authApi } from "../services/api";
@@ -16,6 +17,8 @@ interface AuthContextType {
   register: (data: { name: string; email: string; password: string }) => Promise<void>;
   logout: () => void;
   setUser: (user: User | null) => void;
+  resetPassword: (data: { token: string; password: string }) => Promise<void>;
+  forgotPassword: (email: string) => Promise<void>;
 }
 
 const AuthContext = createContext<AuthContextType | null>(null);
@@ -49,7 +52,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       navigate('/dashboard');
       return response;
     } catch (error: unknown) {
-      // Check for 401 status code
       if (error instanceof Error && 'response' in error && (error as { response: { status: number } }).response?.status === 401) {
         throw new Error('Invalid credentials');
       }
@@ -78,8 +80,41 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     navigate('/');
   };
 
+  const resetPassword = async (data: { token: string; password: string }) => {
+    try {
+      await authApi.resetPassword(data);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message || 'Password reset failed');
+      }
+      throw new Error('Password reset failed');
+    }
+  };
+
+  const forgotPassword = async (email: string) => {
+    try {
+      await authApi.forgotPassword(email);
+    } catch (error) {
+      if (error instanceof Error) {
+        throw new Error(error.message || 'Password reset request failed');
+      }
+      throw new Error('Password reset request failed');
+    }
+  };
+
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, setUser }}>
+    <AuthContext.Provider 
+      value={{ 
+        user, 
+        loading, 
+        login, 
+        register, 
+        logout, 
+        setUser,
+        resetPassword,
+        forgotPassword
+      }}
+    >
       {!loading && children}
     </AuthContext.Provider>
   );

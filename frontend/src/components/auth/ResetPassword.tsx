@@ -12,7 +12,7 @@ export const ResetPassword: React.FC = () => {
   const token = searchParams.get('token');
   const navigate = useNavigate();
   const { showToast } = useNotification();
-  const { resetpassword } = useAuth();
+  const { resetPassword } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [formData, setFormData] = useState({
     password: '',
@@ -32,7 +32,7 @@ export const ResetPassword: React.FC = () => {
 
     setIsLoading(true);
     try {
-      await resetpassword({ token, password: formData.password });
+      await resetPassword({ token, password: formData.password });
       showToast('Password reset successful! Please login with your new password.', 'success');
       navigate('/login');
     } catch {

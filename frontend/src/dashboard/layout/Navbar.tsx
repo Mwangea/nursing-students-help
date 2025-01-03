@@ -73,6 +73,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
                 className="flex items-center gap-2 p-1.5 hover:bg-gray-800 rounded-lg"
                 aria-expanded={isProfileOpen}
                 aria-haspopup="true"
+                title="Profile"
               >
                 <div className="h-7 w-7 rounded-full bg-yellow-400 flex items-center justify-center">
                   <User className="h-4 w-4 text-black" />
