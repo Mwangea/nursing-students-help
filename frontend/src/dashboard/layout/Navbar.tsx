@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { Search, Bell, Menu, User, LogOut, Settings, HelpCircle } from 'lucide-react';
 
 interface NavbarProps {
@@ -13,6 +13,19 @@ export function Navbar({ onMenuClick }: NavbarProps) {
     setProfileOpen(false);
     setMobileSearchOpen(false);
   };
+
+  // Close dropdowns when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      const target = event.target as HTMLElement;
+      if (!target.closest('.dropdown-container')) {
+        closeDropdowns();
+      }
+    };
+
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
+  }, []);
 
   return (
     <nav className="bg-black text-white px-2 sm:px-4 py-2 sticky top-0 z-[100]">
@@ -48,7 +61,11 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             
             {/* Mobile Search Button */}
             <button 
-              onClick={() => setMobileSearchOpen(!isMobileSearchOpen)}
+              onClick={(e) => {
+                e.stopPropagation();
+                setMobileSearchOpen(!isMobileSearchOpen);
+                setProfileOpen(false);
+              }}
               className="md:hidden p-1.5 hover:bg-gray-800 rounded-lg"
               aria-label="Toggle search"
             >
@@ -60,6 +77,7 @@ export function Navbar({ onMenuClick }: NavbarProps) {
               <button 
                 className="p-1.5 hover:bg-gray-800 rounded-lg"
                 aria-label="Notifications"
+                onClick={closeDropdowns}
               >
                 <Bell className="h-5 w-5" />
                 <span className="absolute top-1 right-1 h-2 w-2 bg-yellow-400 rounded-full ring-2 ring-black"></span>
@@ -67,9 +85,13 @@ export function Navbar({ onMenuClick }: NavbarProps) {
             </div>
 
             {/* Profile Dropdown */}
-            <div className="relative">
+            <div className="relative dropdown-container">
               <button 
-                onClick={() => setProfileOpen(!isProfileOpen)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setProfileOpen(!isProfileOpen);
+                  setMobileSearchOpen(false);
+                }}
                 className="flex items-center gap-2 p-1.5 hover:bg-gray-800 rounded-lg"
                 aria-expanded={isProfileOpen}
                 aria-haspopup="true"
@@ -91,11 +113,6 @@ export function Navbar({ onMenuClick }: NavbarProps) {
                   }}
                 >
                   <div className="relative bg-white rounded-lg shadow-lg">
-                    {/* Search Overlay */}
-                    {isMobileSearchOpen && (
-                      <div className="fixed inset-0 bg-black/50" onClick={() => setMobileSearchOpen(false)} />
-                    )}
-                    
                     <a href="/settings" className="flex items-center px-4 py-2 text-sm hover:bg-gray-100">
                       <Settings className="h-4 w-4 mr-3" />
                       Settings
